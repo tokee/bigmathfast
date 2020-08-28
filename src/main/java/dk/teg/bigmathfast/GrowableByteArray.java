@@ -12,7 +12,7 @@
  *  limitations under the License.
  *
  */
-package dk.thomasegense.bigmathfast;
+package dk.teg.bigmathfast;
 
 /**
  * Grows automatically. Not thread safe.

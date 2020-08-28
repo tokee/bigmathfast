@@ -1,4 +1,4 @@
-package dk.thomasegense.bigmathfast;
+package dk.teg.bigmathfast;
 
 import org.junit.jupiter.api.Test;
 

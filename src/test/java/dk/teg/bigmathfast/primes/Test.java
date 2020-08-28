@@ -1,8 +1,10 @@
-package dk.thomasegense.bigmathfast.primes;
+package dk.teg.bigmathfast.primes;
 
 import java.math.BigInteger;
 
-import dk.thomasegense.bigmathfast.primes.ecm.*;
+import ar.alpertron.ecm.Ecm;
+
+
 
 public class Test {
 
