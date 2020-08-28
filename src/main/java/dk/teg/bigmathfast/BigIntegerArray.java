@@ -35,8 +35,8 @@ import java.util.stream.StreamSupport;
  *   Iteration: O(1) for next BigInteger
  *
  *   Random: O(n), where n is the number of BigIntegers
- *   Lookup: O(n), where n is the number of BigIntegers
- *   Replacing: Not possible
+ *   Lookup: Not currently possible, but would be O(n), where n is the number of BigIntegers
+ *   Replace: Not possible
  *   Delete: Not possible
  */
 public class BigIntegerArray implements Iterable<BigInteger> {
@@ -70,6 +70,15 @@ public class BigIntegerArray implements Iterable<BigInteger> {
 
     public long size() {
         return valueCount;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof BigIntegerArray)) {
+            return false;
+        }
+        BigIntegerArray other = (BigIntegerArray)obj;
+        return backing.equals(other.backing);
     }
 
     @Override

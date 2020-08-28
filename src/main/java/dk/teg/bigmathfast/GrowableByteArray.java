@@ -14,8 +14,14 @@
  */
 package dk.teg.bigmathfast;
 
+import java.util.Arrays;
+
 /**
- * Grows automatically. Not thread safe.
+ * Auto growing byte array with max size 2^51 bytes.
+ *
+ * Not thread safe.
+ *
+ * Values are stored in blocks of 2^20 bytes (1 MB). This should work fairly well with the garbage collector.
  */
 public class GrowableByteArray {
     public static final int DEFAULT_BLOCK_BITS = 20; // 1MB
@@ -161,5 +167,22 @@ public class GrowableByteArray {
     public void clear() {
         backing = new byte[0][];
         size = 0;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof GrowableByteArray)) {
+            return false;
+        }
+        GrowableByteArray other = (GrowableByteArray)obj;
+        if (size != other.size || backing.length != other.backing.length) {
+            return false;
+        }
+        for (int i = 0 ; i < backing.length ; i++) {
+            if (!Arrays.equals(backing[i], other.backing[i])) {
+                return false;
+            }
+        }
+        return true;
     }
 }
