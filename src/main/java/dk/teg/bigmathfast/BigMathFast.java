@@ -107,7 +107,7 @@ public class BigMathFast {
      * @return ArrayList<BigInteger> All numbers have Euler Totient equal to b 
      *  
      */
-    public static ArrayList<BigInteger> inverseEulerTotient(BigInteger b) {        
+    public static BigIntegerArray inverseEulerTotient(BigInteger b) {
         return EulerTotient.inverseEulerTotient(b);
     }
         

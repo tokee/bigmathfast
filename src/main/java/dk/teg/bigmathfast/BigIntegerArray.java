@@ -15,9 +15,12 @@
 package dk.teg.bigmathfast;
 
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
@@ -43,7 +46,7 @@ public class BigIntegerArray implements Iterable<BigInteger> {
     public BigIntegerArray() { }
 
     public BigIntegerArray(Collection<BigInteger> values) {
-        add(values);
+        addAll(values);
     }
 
     public void add(BigInteger value) {
@@ -53,13 +56,19 @@ public class BigIntegerArray implements Iterable<BigInteger> {
         valueCount++;
     }
 
-    public void add(Collection<BigInteger> values) {
+    public void addAll(Collection<BigInteger> values) {
         for (BigInteger value: values) {
             add(value);
         }
     }
 
-    public long getValueCount() {
+    public void addAll(BigIntegerArray values) {
+        for (BigInteger value: values) {
+            add(value);
+        }
+    }
+
+    public long size() {
         return valueCount;
     }
 
@@ -70,6 +79,13 @@ public class BigIntegerArray implements Iterable<BigInteger> {
 
     public Stream<BigInteger> stream() {
         return StreamSupport.stream(spliterator(), false);
+    }
+
+    /**
+     * @return a mutable List with the BigIntegers.
+     */
+    public List<BigInteger> toList() {
+        return stream().collect(Collectors.toList());
     }
 
     class BIAIterator implements Iterator<BigInteger> {

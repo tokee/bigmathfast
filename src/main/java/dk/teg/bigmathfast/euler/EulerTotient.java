@@ -34,11 +34,11 @@ public class EulerTotient {
   
   
   //The cache will only contain values for odd numbers.
-  private static HashMap<BigInteger, ArrayList<BigInteger>> inverseEulerTotientCacheOdds = new HashMap<BigInteger, ArrayList<BigInteger>>();
+  private static HashMap<BigInteger, BigIntegerArray> inverseEulerTotientCacheOdds = new HashMap<>();
   
   static {
-    //The recursion will require the first value 
-    ArrayList<BigInteger> b1List = new ArrayList<BigInteger>();
+    //The recursion will require the first value
+    BigIntegerArray b1List = new BigIntegerArray();
     b1List.add(B1);
     b1List.add(B2);
     inverseEulerTotientCacheOdds.put(B1, b1List);            
@@ -67,7 +67,7 @@ public class EulerTotient {
       //Takes 35 minutes
      //ArrayList<BigInteger> solutions = inverseEulerTotient(new BigInteger("24721808588772212736"),true);
             
-      ArrayList<BigInteger> solutions = inverseEulerTotient(new BigInteger("576"));
+      BigIntegerArray solutions = inverseEulerTotient(new BigInteger("576"));
       
       //20 secs
  //ArrayList<BigInteger> solutions = inverseEulerTotient(new BigInteger("24142391199972864"),true);     
@@ -80,7 +80,7 @@ public class EulerTotient {
       //ArrayList<BigInteger> solutions = inverseEulerTotient(new BigInteger("32"),true);
       //ArrayList<BigInteger> solutions = inverseEulerTotient(new BigInteger("6"),true);
       //ArrayList<BigInteger> solutions = inverseEulerTotient(new BigInteger("2310"),true);
-      Collections.sort(solutions);
+      //Collections.sort(solutions);
       System.out.println("#solutions:"+solutions.size());
   //    System.out.println("solutions:"+solutions);
       System.out.println("cache size:"+inverseEulerTotientCacheOdds.size());
@@ -106,11 +106,11 @@ public class EulerTotient {
   }
 
 
-  public static ArrayList<BigInteger> getDivisors(Map<BigInteger,Integer> primesWithMultiplicty){  
-    ArrayList<BigInteger> divisors = new ArrayList<BigInteger>();
+  public static BigIntegerArray getDivisors(Map<BigInteger,Integer> primesWithMultiplicty){
+    BigIntegerArray divisors = new BigIntegerArray();
     divisors.add(new BigInteger("1"));  //start set  
     for (BigInteger factor : primesWithMultiplicty.keySet()) {
-      ArrayList<BigInteger> powers = getPowers(factor, primesWithMultiplicty.get(factor));     
+        BigIntegerArray powers = getPowers(factor, primesWithMultiplicty.get(factor));
       divisors = multiplySets(divisors, powers);
     }
 
@@ -123,28 +123,30 @@ public class EulerTotient {
   /*  
    * This method will be called by itself recursive
    */
-  private static ArrayList<BigInteger> inverseEulerTotentOdds(BigInteger b){
+  private static BigIntegerArray inverseEulerTotentOdds(BigInteger b){
 
       //Use cache
       if (inverseEulerTotientCacheOdds.containsKey(b)) {
         return inverseEulerTotientCacheOdds.get(b);
       }
       
-      ArrayList<BigInteger> results =   new ArrayList<BigInteger>();
+      BigIntegerArray results = new BigIntegerArray();
 
       BigIntegerArray factors = factor(b);
       
       Map<BigInteger, Integer> primesAndMultiplicity = countMultiplicites(factors);   
-      ArrayList<BigInteger> divisors = getDivisors(primesAndMultiplicity);       
+      BigIntegerArray divisors = getDivisors(primesAndMultiplicity);
       //System.out.println("divisors:"+divisors);
       
-      ArrayList<BigInteger> primes = add1AndKeepPrimesOnlyReversedOrder(divisors);
+      BigIntegerArray primes = add1AndKeepPrimesOnlyReversedOrder(divisors, primesAndMultiplicity.get(B2) != null ? B2 : null);
       
+//      This is handled by the "unwanted" argument to add1AndKeepPrimesOnlyReversedOrder above as BigIntegerArray
+//      does not support remove
+//      if (primesAndMultiplicity.get(B2) != null)
+//      {
+//        primes.remove(B2);
+//      }
 
-      if (primesAndMultiplicity.get(B2) != null)
-      {   
-        primes.remove(B2);
-      }
       for (BigInteger prime : primes) {
         Integer multiplicity = primesAndMultiplicity.get(prime);
         if (multiplicity == null) {
@@ -170,16 +172,16 @@ public class EulerTotient {
             continue;            
           }
                           
-           ArrayList<BigInteger> tmpSet = new ArrayList<BigInteger>();
+            BigIntegerArray tmpSet = new BigIntegerArray();
            tmpSet.add(prime.pow(multi));
            
            
-           ArrayList<BigInteger> localInverse =  inverseEulerTotentOdds(mDiv_phi_primeD);
+            BigIntegerArray localInverse =  inverseEulerTotentOdds(mDiv_phi_primeD);
            //Remove elements with primefactors less than prime
            
-           ArrayList<BigInteger>  localInverseWithoutSmallFactors = removeNumbersWithSmallPrimeFactors(localInverse, prime);
+            BigIntegerArray localInverseWithoutSmallFactors = removeNumbersWithSmallPrimeFactors(localInverse, prime);
            
-           ArrayList<BigInteger> newSolutions=multiplySets(tmpSet,localInverseWithoutSmallFactors); // only odds 
+            BigIntegerArray newSolutions = multiplySets(tmpSet,localInverseWithoutSmallFactors); // only odds
          
            results.addAll(newSolutions);               
         }
@@ -191,12 +193,12 @@ public class EulerTotient {
       
   }
 
-  public static ArrayList<BigInteger> inverseEulerTotient(BigInteger b) { 
+  public static BigIntegerArray inverseEulerTotient(BigInteger b) {
    
         
     if (!B1.equals(B1) && !isEven(b)) {
    System.out.println("skipping odds >1 :"+b);
-       return new  ArrayList<BigInteger>();
+       return new BigIntegerArray();
       
     }
      pool = Executors.newFixedThreadPool(8); // 8 threads
@@ -204,7 +206,7 @@ public class EulerTotient {
      
     
     //First get all odds
-    ArrayList<BigInteger> results=inverseEulerTotentOdds(b);
+      BigIntegerArray results = inverseEulerTotentOdds(b);
      
       
       //TODO use iterator!
@@ -226,18 +228,18 @@ public class EulerTotient {
           //System.out.println(B2 +":"+multi + ":"+phi_primeD+ ":"+ mDiv_phi_primeD);
         
           //Will always be cached
-          ArrayList<BigInteger> oddSolutions = inverseEulerTotientCacheOdds.get(mDiv_phi_primeD);         
+          BigIntegerArray oddSolutions = inverseEulerTotientCacheOdds.get(mDiv_phi_primeD);
           
           //We have to remove all all even solutions since prime 2 will divide them.
           //But only 2 is  even number that can be here.
           //TODO clear cache and only remove B2 ?
-          ArrayList<BigInteger>  localInverseWithoutSmallFactors = removeNumbersWithSmallPrimeFactors(oddSolutions, B2);
+          BigIntegerArray localInverseWithoutSmallFactors = removeNumbersWithSmallPrimeFactors(oddSolutions, B2);
                      
           //System.out.println("cache for:"+mDiv_phi_primeD +":"+ oddSolutions);
-          ArrayList<BigInteger> multiSet = new ArrayList<BigInteger>();
+          BigIntegerArray multiSet = new BigIntegerArray();
           multiSet.add((B2.pow(multi)));          
           //System.out.println("multi sets:"+multiSet +" "+ oddSolutions + " for div:"+mDiv_phi_primeD);
-          ArrayList<BigInteger> newSolutions=multiplySets(multiSet, localInverseWithoutSmallFactors); // only odds
+          BigIntegerArray newSolutions = multiplySets(multiSet, localInverseWithoutSmallFactors); // only odds
           
           //System.out.println("adding #:"+newSolutions.size());
           results.addAll(newSolutions);
@@ -256,9 +258,9 @@ public class EulerTotient {
      * 
      * Can be heavy optimzied, but this is not the bottleneck! 
      */
-    private static ArrayList<BigInteger> removeNumbersWithSmallPrimeFactors(ArrayList<BigInteger> numbers, BigInteger maxPrimeFactor){
+    private static BigIntegerArray removeNumbersWithSmallPrimeFactors(BigIntegerArray numbers, BigInteger maxPrimeFactor){
 
-      ArrayList<BigInteger>  keepers = new ArrayList<BigInteger>();
+      BigIntegerArray keepers = new BigIntegerArray();
 
       for (BigInteger b : numbers) {
         BigIntegerArray factors = factor(b);
@@ -283,8 +285,8 @@ public class EulerTotient {
     /*
      * Multiplies all combinations of the two sets.
      */
-    private static ArrayList<BigInteger> multiplySets(ArrayList<BigInteger> s1, ArrayList<BigInteger> s2){
-      ArrayList<BigInteger> multiplySet = new ArrayList<BigInteger>();
+    private static BigIntegerArray multiplySets(BigIntegerArray s1, BigIntegerArray s2){
+      BigIntegerArray multiplySet = new BigIntegerArray();
       for (BigInteger b1 : s1) {
         for (BigInteger b2 : s2) {        
           multiplySet.add(b1.multiply(b2));
@@ -322,20 +324,20 @@ public class EulerTotient {
      *Add 1 to each element in list. Only keep primes
      *Return list sorted small numbers first 
      */
-    private static ArrayList<BigInteger> add1AndKeepPrimesOnlyReversedOrder(ArrayList<BigInteger> list){
+    private static BigIntegerArray add1AndKeepPrimesOnlyReversedOrder(BigIntegerArray list, BigInteger unwanted){
       ArrayList<BigInteger> primes = new ArrayList<BigInteger>();
 
       for (BigInteger b : list) {
         BigInteger b_add1 = b.add(new BigInteger("1"));
 
         MillerRabin m = new MillerRabin(b_add1, 20);
-        if (m.isPrime()) {
+        if (m.isPrime() && !b_add1.equals(unwanted)) {
           primes.add(b_add1);
         }            
       }  
       Collections.sort(primes); //sort
       Collections.reverse(primes); //desc
-      return primes;
+      return new  BigIntegerArray(primes);
     }
 
     /*
@@ -345,8 +347,8 @@ public class EulerTotient {
      * return {1,2,4,8,16}
      * 
      */
-    private static ArrayList<BigInteger> getPowers(BigInteger base, int maxMultiplicity){
-      ArrayList<BigInteger> powers = new ArrayList<BigInteger>();    
+    private static BigIntegerArray getPowers(BigInteger base, int maxMultiplicity){
+        BigIntegerArray powers = new BigIntegerArray();
       BigInteger current = new BigInteger("1"); 
       for (int i = 0;i <= maxMultiplicity;i++) {
         powers.add(current);

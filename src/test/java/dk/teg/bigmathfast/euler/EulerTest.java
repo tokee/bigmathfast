@@ -4,12 +4,13 @@ package dk.teg.bigmathfast.euler;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import dk.teg.bigmathfast.BigIntegerArray;
 import org.junit.jupiter.api.Test;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-
+import java.util.List;
 
 
 public class EulerTest {
@@ -46,7 +47,7 @@ public class EulerTest {
         
         for (int i = 1;i<maxValue;i++) {
             BigInteger current = new BigInteger (""+i);            
-            ArrayList<BigInteger> solutionsCalculated = EulerTotient.inverseEulerTotient(current);
+            List<BigInteger> solutionsCalculated = EulerTotient.inverseEulerTotient(current).toList();
             Collections.sort(solutionsCalculated);
             ArrayList<BigInteger> solutionsBruteForced = inverseEulerMap.get(current);
             if (solutionsBruteForced == null) {
