@@ -122,4 +122,12 @@ public class BigIntegerArray implements Iterable<BigInteger> {
             return new BigInteger(bytes);
         }
     }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        stream().forEach(bi -> sb.append(sb.length() == 0 ? "[" : ", ").append(bi.toString()));
+        sb.append("]");
+        return sb.toString();
+    }
 }
