@@ -18,6 +18,8 @@ import java.math.BigInteger;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 /**
  * Special purpose representation of BigIntegers with a singular focus on the the access pattern
@@ -38,11 +40,23 @@ public class BigIntegerArray implements Iterable<BigInteger> {
     final GrowableByteArray backing = new GrowableByteArray();
     long valueCount = 0;
 
+    public BigIntegerArray() { }
+
+    public BigIntegerArray(Collection<BigInteger> values) {
+        add(values);
+    }
+
     public void add(BigInteger value) {
         byte[] bytes = value.toByteArray();
         backing.add((byte) bytes.length);
         backing.add(bytes);
         valueCount++;
+    }
+
+    public void add(Collection<BigInteger> values) {
+        for (BigInteger value: values) {
+            add(value);
+        }
     }
 
     public long getValueCount() {
@@ -52,6 +66,10 @@ public class BigIntegerArray implements Iterable<BigInteger> {
     @Override
     public Iterator<BigInteger> iterator() {
         return new BIAIterator(this);
+    }
+
+    public Stream<BigInteger> stream() {
+        return StreamSupport.stream(spliterator(), false);
     }
 
     class BIAIterator implements Iterator<BigInteger> {

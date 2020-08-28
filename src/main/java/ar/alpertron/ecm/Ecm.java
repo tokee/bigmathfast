@@ -13,6 +13,8 @@ package ar.alpertron.ecm;
 //
 
 
+import dk.teg.bigmathfast.BigIntegerArray;
+
 import java.math.*;
 import java.sql.BatchUpdateException;
 import java.util.ArrayList;
@@ -479,12 +481,12 @@ public class Ecm  implements Runnable, FactorApplet
   
     
   
-  public static ArrayList<BigInteger> factor(BigInteger b)
+  public static BigIntegerArray factor(BigInteger b)
   {      
       
       final Ecm ecm1 = new Ecm();
       ecm1.StartFactorExprBatch(b.toString(), 0);      
-      ArrayList<BigInteger> factors = new ArrayList<BigInteger>();
+      BigIntegerArray factors = new BigIntegerArray();
       
       try {
       ecm1.calcThread.join();

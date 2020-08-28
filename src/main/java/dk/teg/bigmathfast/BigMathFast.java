@@ -29,7 +29,7 @@ public class BigMathFast {
         
         BigInteger b= new BigInteger(args[0]);
         long start = System.currentTimeMillis();
-        ArrayList<BigInteger> factors = Ecm.factor(b);
+        BigIntegerArray factors = Ecm.factor(b);
         System.out.println("Factotorization time in millis:"+(System.currentTimeMillis()-start));
         System.out.println(factors);          
     }
@@ -51,7 +51,7 @@ public class BigMathFast {
      * @return ArrayList<BigInteger> with the prime factors in sorted order. 
      *  
      */    
-    public static ArrayList<BigInteger> factorize(BigInteger b){        
+    public static BigIntegerArray factorize(BigInteger b){
         if (b.toString().length() <22) {
             return PollardRho.factor(b); 
         }
@@ -75,7 +75,7 @@ public class BigMathFast {
      *  
      */    
     public static List<Long> factorize(Long b){        
-             ArrayList<BigInteger> factor = PollardRho.factor(new BigInteger(""+b)); 
+             BigIntegerArray factor = PollardRho.factor(new BigInteger(""+b));
              List<Long>  factorsLong  =factor.stream().map( s ->  s.longValue()).collect(Collectors.toList());
              return factorsLong;             
     }

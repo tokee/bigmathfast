@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.math.BigInteger;
 import java.util.ArrayList;
 
+import dk.teg.bigmathfast.BigIntegerArray;
 import org.junit.jupiter.api.Test;
 
 import ar.alpertron.ecm.Ecm;
@@ -24,12 +25,12 @@ public class PrimeFactoringBenchMark {
             //number="90105590165517928753889708611168689116043190507997";
             System.out.println(number);
             long start = System.currentTimeMillis();
-            ArrayList<BigInteger> factorRho = Ecm.factor(new BigInteger(number));
+            BigIntegerArray factorRho = Ecm.factor(new BigInteger(number));
             timeRho += (System.currentTimeMillis()-start);
                                 
             
             start = System.currentTimeMillis();
-            ArrayList<BigInteger> factorEcm= Ecm.factor(new BigInteger(number));
+            BigIntegerArray factorEcm = Ecm.factor(new BigInteger(number));
             timeEcm += (System.currentTimeMillis()-start);
             assertEquals(factorRho, factorEcm);
             System.out.println(timeRho +":"+timeEcm +" number:"+number);

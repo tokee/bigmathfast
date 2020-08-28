@@ -1,5 +1,7 @@
 package dk.teg.bigmathfast.primes;
 
+import dk.teg.bigmathfast.BigIntegerArray;
+
 import java.math.BigInteger;
 import java.security.SecureRandom;
 import java.util.ArrayList;
@@ -19,11 +21,12 @@ public class PollardRho {
     private final static SecureRandom random = new SecureRandom();
 
 
-    public static ArrayList<BigInteger> factor(BigInteger N) {         
-        ArrayList<BigInteger> factors = new  ArrayList<BigInteger>();
+    public static BigIntegerArray factor(BigInteger N) {
+        ArrayList<BigInteger> factors = new  ArrayList<>();
         factor(N,factors);
         Collections.sort(factors);
-        return factors;        
+
+        return new BigIntegerArray(factors);
     }
 
 

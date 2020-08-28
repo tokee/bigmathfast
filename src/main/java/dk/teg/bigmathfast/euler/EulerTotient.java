@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import dk.teg.bigmathfast.BigIntegerArray;
 import dk.teg.bigmathfast.primes.MillerRabin;
 import dk.teg.bigmathfast.primes.PollardRho;
 import ar.alpertron.ecm.*;
@@ -93,8 +94,8 @@ public class EulerTotient {
    * This is just the product of the euler totient for each prime with multiplicity
    */
   public static BigInteger eulerTotient(BigInteger b) {
-    
-    ArrayList<BigInteger> factors = factor(b);
+
+    BigIntegerArray factors = factor(b);
     Map<BigInteger, Integer> primesAndMultiplicity = countMultiplicites(factors);   
 
     BigInteger eulerTotient = B1; 
@@ -131,7 +132,7 @@ public class EulerTotient {
       
       ArrayList<BigInteger> results =   new ArrayList<BigInteger>();
 
-      ArrayList<BigInteger> factors = factor(b);
+      BigIntegerArray factors = factor(b);
       
       Map<BigInteger, Integer> primesAndMultiplicity = countMultiplicites(factors);   
       ArrayList<BigInteger> divisors = getDivisors(primesAndMultiplicity);       
@@ -260,7 +261,7 @@ public class EulerTotient {
       ArrayList<BigInteger>  keepers = new ArrayList<BigInteger>();
 
       for (BigInteger b : numbers) {
-        ArrayList<BigInteger> factors = factor(b);
+        BigIntegerArray factors = factor(b);
         boolean smallFactor = false;
         for (BigInteger factor :factors) {         
           if (factor.compareTo(maxPrimeFactor) <=0) { //TODO, maybe faster to try small divisors than factor
@@ -301,7 +302,7 @@ public class EulerTotient {
      * {7,1}
      *
      */
-    private static Map<BigInteger, Integer> countMultiplicites(  ArrayList<BigInteger> factorization){
+    private static Map<BigInteger, Integer> countMultiplicites(BigIntegerArray factorization){
 
       Map<BigInteger, Integer> multiplicities = new  HashMap<BigInteger, Integer> ();
 
@@ -376,7 +377,7 @@ private static boolean doesDivide(BigInteger b1, BigInteger b2) {
 
     
     
-    private static ArrayList<BigInteger> factor (BigInteger b) {
+    private static BigIntegerArray factor (BigInteger b) {
     if (b.toString().length() > 22) {
         return Ecm.factor(b);
     }else {
